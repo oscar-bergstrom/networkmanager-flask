@@ -3,7 +3,7 @@
 <html>
   <head>
       <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %}</title>
+    <title>NetworkManager</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
   <body>
@@ -12,13 +12,14 @@
         <h1 class="logo">NetworkManager</h1>
         <strong><nav>
           <ul class="menu">
-              <li><a href="{{ url_for('index') }}">Connections</a></li>
-              <li><a href="{{ url_for('index') }}">Interfaces</a></li>
+              <li><a href="{{ url_for('connections') }}">Connections</a></li>
+              <li><a href="{{ url_for('interfaces') }}">Interfaces</a></li>
           </ul>
         </nav></strong>
       </div>
     </header>
     <div class="container">
+      <H1>{% block title %} {% endblock %}</H1>
       {% block content %}
       {% endblock %}
     </div>

@@ -11,13 +11,12 @@ def index():
     return render_template("index.html", utc_dt=datetime.utcnow())
 
 
-@app.route("/name/<name>")
-def hello(name):
-    return f"Hello, {escape(name)}!"
+@app.route("/connections")
+def connections():
+    return render_template("connections.html")
 
 
-@app.route("/local")
-def local_list():
-    with open("/proc/cpuinfo") as f:
-        return f"<p>{f.read()}</p>"
+@app.route("/interfaces")
+def interfaces():
+    return render_template("interfaces.html")
 
