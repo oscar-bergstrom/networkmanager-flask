@@ -3,5 +3,27 @@
 {% block title %} Connections {% endblock %}
 
 {% block content %}
+<table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Uuid</th>
+        <th>Type</th>
+        <th>Interface</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for connection in connections %}
+        <tr>
+            <td>{{ connection.name }}</td>
+            <td>{{ connection.uuid }}</td>
+            <td>{{ connection.type }}</td>
+            <td>{{ connection.device }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock %}
+
+
