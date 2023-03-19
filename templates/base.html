@@ -5,6 +5,7 @@
       <meta charset="UTF-8">
     <title>NetworkManager</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
   </head>
   <body>
     <header>
@@ -18,8 +19,9 @@
         </nav></strong>
       </div>
     </header>
+
+    <H1>{% block title %} {% endblock %}</H1>
     <div class="container">
-      <H1>{% block title %} {% endblock %}</H1>
       {% block content %}
       {% endblock %}
     </div>
