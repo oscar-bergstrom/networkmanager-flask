@@ -25,12 +25,11 @@ class Device:
 def _nmcli(args: List[bytes]) -> str:
     command = [nmcli_cmd, b"-c", b"no"]
     command.extend(args)
-    print(command)
 
     ret = subprocess.run(command, capture_output=True)
 
     if ret.returncode == 0:
-        return str(ret.stdout)
+        return ret.stdout.decode("utf-8")
     else:
         raise IOError("Running {} returned {}".format(command, ret.returncode))
 
@@ -43,7 +42,7 @@ def parse_table(text: str) -> List[List[str]]:
     """
     rows = []
     for line in text.splitlines():
-        fields = line.split("  ")
+        fields = line.rstrip().lstrip().split("  ")
         col = []
         for field in fields:
             if field:

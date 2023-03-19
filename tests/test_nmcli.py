@@ -42,6 +42,18 @@ class ParseTableTests(TestCase):
         assert m[0][1] == "2"
         assert m[0][2] == "3"
 
+    def test_newline_characters(self):
+        b = b"a  b\nc  d\n"
+        s = b.decode("utf-8")
+        m = nmcli.parse_table(s)
+
+        assert len(m) == 2
+        assert m[0][0] == "a"
+        assert m[0][1] == "b"
+        assert m[1][0] == "c"
+        assert m[1][1] == "d"
+
+
 
 class TableIntoClassesTest(TestCase):
     class SimpleClass:
