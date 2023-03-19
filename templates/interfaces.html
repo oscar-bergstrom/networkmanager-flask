@@ -3,5 +3,25 @@
 {% block title %} Interfaces {% endblock %}
 
 {% block content %}
+<table id="table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Interface</th>
+        <th>Type</th>
+        <th>State</th>
+        <th>Connection</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for interface in interfaces %}
+        <tr>
+            <td>{{ interface.device }}</td>
+            <td>{{ interface.type }}</td>
+            <td>{{ interface.state }}</td>
+            <td>{{ interface.connection }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock %}
