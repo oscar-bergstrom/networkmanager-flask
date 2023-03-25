@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} Connection - {{connection["connection.id"]}} {% endblock %}
+
+{% block content %}
+<table id="table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for key in connection %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ connection[key] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

@@ -1,5 +1,5 @@
 import subprocess
-from typing import List, Type
+from typing import List, Type, TypedDict
 from dataclasses import dataclass
 
 nmcli_cmd: bytes = b"/usr/bin/nmcli"
@@ -54,6 +54,18 @@ def parse_table(text: str) -> List[List[str]]:
     return rows
 
 
+def parse_dict(text: str, delimiter=":") -> dict[str, str]:
+    results = {}
+    for line in text.splitlines():
+        try:
+            key, value = line.split(delimiter)
+            results[key] = value.rstrip().lstrip()
+        except ValueError:
+            print("Could not parse dict for line: {}".format(line))
+
+    return results
+
+
 def table_into_class(table: List[List[str]], constructor: Type) -> List[Type]:
     objects = []
     for row in table:
@@ -67,6 +79,12 @@ def get_connections() -> List[Connection]:
     output = _nmcli([b"con"])
     table = parse_table(output)
     return table_into_class(table[1:], Connection)
+
+
+def get_connection_info(connection: str):
+    output = _nmcli([b"con", b"show", connection.encode("utf-8")])
+    d = parse_dict(output, ":")
+    return d
 
 
 def get_devices() -> List[Device]:

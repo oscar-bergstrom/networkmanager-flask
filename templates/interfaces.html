@@ -18,7 +18,7 @@
             <td>{{ interface.device }}</td>
             <td>{{ interface.type }}</td>
             <td>{{ interface.state }}</td>
-            <td>{{ interface.connection }}</td>
+            <td><a href="{{ url_for('connection', con=interface.connection) }}">{{ interface.connection }}</a></td>
         </tr>
       {% endfor %}
     </tbody>

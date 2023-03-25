@@ -157,3 +157,54 @@ lo               loopback  unmanaged     --  """
         assert devices[1].type == "loopback"
         assert devices[1].state == "unmanaged"
         assert devices[1].connection == "--"
+
+
+class ParseDictTest(TestCase):
+    def test_single_line(self):
+        d = nmcli.parse_dict("KEY:  PARAM")
+        assert d["KEY"] == "PARAM"
+
+    def test_multiline(self):
+        d = nmcli.parse_dict("A:  B\nC:  D")
+        assert d["A"] == "B"
+        assert d["C"] == "D"
+
+    def test_no_space(self):
+        d = nmcli.parse_dict("A:B")
+        assert d["A"] == "B"
+
+
+    def test_empty_string(self):
+        d = nmcli.parse_dict("")
+        assert len(d) == 0
+
+
+    def test_empty_lines(self):
+        d = nmcli.parse_dict("A:B\n\n\nC:D\n\n")
+        assert d["A"] == "B"
+        assert d["C"] == "D"
+
+
+class GetConnectionInfoTest(TestCase):
+    OUTPUT = """connection.id:                          blan
+connection.uuid:                        b6f51e11-79d7-4216-9b67-a63a910551fe
+connection.stable-id:                   --
+connection.type:                        802-11-wireless
+"""
+
+    def setUp(self) -> None:
+        self.nmcli_mock = Mock()
+        self.nmcli_mock.return_value = self.OUTPUT
+        nmcli._nmcli = self.nmcli_mock
+
+    def test_base_command_is_called(self):
+        nmcli.get_connection_info("blan")
+        self.nmcli_mock.assert_called_with([b'con', b'show', b'blan'])
+
+    def test_contents(self):
+        d = nmcli.get_connection_info("blan")
+        assert d["connection.id"] == "blan"
+        assert d["connection.uuid"] == "b6f51e11-79d7-4216-9b67-a63a910551fe"
+        assert d["connection.stable-id"] == "--"
+        assert d["connection.type"] == "802-11-wireless"
+

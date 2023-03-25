@@ -19,6 +19,15 @@ def connections():
     return render_template("connections.html", connections=con)
 
 
+@app.route("/connections/<con>")
+def connection(con):
+    try:
+        info = nmcli.get_connection_info(con)
+    except OSError as e:
+        info = {"ERROR": e.__str__()}
+    return render_template("connection.html", connection=info)
+
+
 @app.route("/interfaces")
 def interfaces():
     return render_template("interfaces.html", interfaces=nmcli.get_devices())
