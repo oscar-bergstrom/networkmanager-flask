@@ -18,7 +18,7 @@
             <td><a href="{{ url_for('connection', con=connection.name) }}">{{ connection.name }}</a></td>
             <td>{{ connection.uuid }}</td>
             <td>{{ connection.type }}</td>
-            <td>{{ connection.device }}</td>
+            <td><a href="{{ url_for('interface', interface_id=connection.device) }}">{{ connection.device }}</a></td>
         </tr>
       {% endfor %}
     </tbody>

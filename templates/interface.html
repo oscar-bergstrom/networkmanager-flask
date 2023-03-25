@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} Interface - {{interface["GENERAL.DEVICE"]}} {% endblock %}
+
+{% block content %}
+<table id="table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for key in interface %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ interface[key] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

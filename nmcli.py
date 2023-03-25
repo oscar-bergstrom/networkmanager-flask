@@ -58,7 +58,7 @@ def parse_dict(text: str, delimiter=":") -> dict[str, str]:
     results = {}
     for line in text.splitlines():
         try:
-            key, value = line.split(delimiter)
+            key, value = line.split(delimiter, maxsplit=1)
             results[key] = value.rstrip().lstrip()
         except ValueError:
             print("Could not parse dict for line: {}".format(line))
@@ -81,7 +81,7 @@ def get_connections() -> List[Connection]:
     return table_into_class(table[1:], Connection)
 
 
-def get_connection_info(connection: str):
+def get_connection_info(connection: str) -> dict[str, str]:
     output = _nmcli([b"con", b"show", connection.encode("utf-8")])
     d = parse_dict(output, ":")
     return d
@@ -91,3 +91,9 @@ def get_devices() -> List[Device]:
     output = _nmcli([b"device"])
     table = parse_table(output)
     return table_into_class(table[1:], Device)
+
+
+def get_device_info(device: str) -> dict[str, str]:
+    output = _nmcli([b"device", b"show", device.encode("utf-8")])
+    d = parse_dict(output, ":")
+    return d

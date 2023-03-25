@@ -32,3 +32,12 @@ def connection(con):
 def interfaces():
     return render_template("interfaces.html", interfaces=nmcli.get_devices())
 
+
+@app.route("/interfaces/<interface_id>")
+def interface(interface_id):
+    try:
+        info = nmcli.get_device_info(interface_id)
+    except OSError as e:
+        info = {"ERROR": e.__str__()}
+    return render_template("interface.html", interface=info)
+

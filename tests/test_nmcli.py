@@ -184,6 +184,10 @@ class ParseDictTest(TestCase):
         assert d["A"] == "B"
         assert d["C"] == "D"
 
+    def test_separator_in_value(self):
+        d = nmcli.parse_dict("GENERAL.HWADDR: 00:22:75:FF:95:88")
+        assert d["GENERAL.HWADDR"] == "00:22:75:FF:95:88"
+
 
 class GetConnectionInfoTest(TestCase):
     OUTPUT = """connection.id:                          blan
@@ -208,3 +212,24 @@ connection.type:                        802-11-wireless
         assert d["connection.stable-id"] == "--"
         assert d["connection.type"] == "802-11-wireless"
 
+
+class GetDeviceInfo(TestCase):
+    OUTPUT = """GENERAL.DEVICE:                         wlx002275ff9588
+GENERAL.TYPE:                           wifi
+GENERAL.HWADDR:                         00:22:75:FF:95:88
+"""
+
+    def setUp(self) -> None:
+        self.nmcli_mock = Mock()
+        self.nmcli_mock.return_value = self.OUTPUT
+        nmcli._nmcli = self.nmcli_mock
+
+    def test_base_command_is_called(self):
+        nmcli.get_device_info("wlx002275ff9588")
+        self.nmcli_mock.assert_called_with([b'device', b'show', b'wlx002275ff9588'])
+
+    def test_contents(self):
+        d = nmcli.get_connection_info("wlx002275ff9588")
+        assert d["GENERAL.DEVICE"] == "wlx002275ff9588"
+        assert d["GENERAL.TYPE"] == "wifi"
+        assert d["GENERAL.HWADDR"] == "00:22:75:FF:95:88"
