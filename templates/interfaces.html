@@ -15,10 +15,25 @@
     <tbody>
       {% for interface in interfaces %}
         <tr>
-            <td><a href="{{ url_for('interface', interface_id=interface.device) }}">{{ interface.device }}</a></td>
-            <td>{{ interface.type }}</td>
+            <td>
+                <a href="{{ url_for('interface', interface_id=interface.device) }}">
+                    {{ interface.device }}
+                </a>
+            </td>
+            <td>
+                {{ interface.type }}
+                {% if interface.type == "wifi" %}
+                <a href="{{ url_for('interface_list', interface_id=interface.device) }}">
+                    [SCAN]
+                </a>
+                {% endif %}
+            </td>
             <td>{{ interface.state }}</td>
-            <td><a href="{{ url_for('connection', con=interface.connection) }}">{{ interface.connection }}</a></td>
+            <td>
+                <a href="{{ url_for('connection', con=interface.connection) }}">
+                    {{ interface.connection }}
+                </a>
+            </td>
         </tr>
       {% endfor %}
     </tbody>

@@ -233,3 +233,39 @@ GENERAL.HWADDR:                         00:22:75:FF:95:88
         assert d["GENERAL.DEVICE"] == "wlx002275ff9588"
         assert d["GENERAL.TYPE"] == "wifi"
         assert d["GENERAL.HWADDR"] == "00:22:75:FF:95:88"
+
+
+class ScanNetworkTest(TestCase):
+    OUTPUT = """IN-USE  BSSID              SSID                          MODE   CHAN  RATE        SIGNAL  BARS  SECURITY  
+        00:22:75:FF:95:88  blan                          Infra  1     54 Mbit/s   100     ▂▄▆█  WPA1 WPA2 
+        AC:9E:17:80:E7:48  newbie                        Infra  10    195 Mbit/s  100     ▂▄▆█  WPA2      
+*       AC:9E:17:80:E7:4C  newbie-5                      Infra  36    405 Mbit/s  50      ▂▄__  WPA2      
+        FC:EC:DA:11:D5:13  ASUS                          Infra  1     195 Mbit/s  37      ▂▄__  WPA2  
+"""
+
+    def setUp(self) -> None:
+        self.nmcli_mock = Mock()
+        self.nmcli_mock.return_value = self.OUTPUT
+        nmcli._nmcli = self.nmcli_mock
+
+    def test_base_command_is_called(self):
+        nmcli.scan_networks("my_interface")
+        self.nmcli_mock.assert_called_with([b"device", b"wifi", b"list", b"ifname", b"my_interface"])
+
+    def test_base_command_is_called_no_interface(self):
+        nmcli.scan_networks()
+        self.nmcli_mock.assert_called_with([b"device", b"wifi", b"list"])
+
+    def test_network_blan(self):
+        networks = nmcli.scan_networks()
+        assert networks[0].in_use == ""
+        assert networks[0].bssid == "00:22:75:FF:95:88"
+        assert networks[0].ssid == "blan"
+        assert networks[0].mode == "Infra"
+        assert networks[0].chan == "1"
+        assert networks[0].rate == "54 Mbit/s"
+        assert networks[0].signal == "100"
+        assert networks[0].bars == "▂▄▆█"
+        assert networks[0].security == "WPA1 WPA2"
+
+

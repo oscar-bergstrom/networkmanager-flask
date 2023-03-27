@@ -41,3 +41,8 @@ def interface(interface_id):
         info = {"ERROR": e.__str__()}
     return render_template("interface.html", interface=info)
 
+@app.route("/interfaces/<interface_id>/list")
+def interface_list(interface_id):
+    networks = nmcli.scan_networks(interface_id)
+    return render_template("list.html", interface=interface_id, networks=networks)
+

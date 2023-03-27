@@ -3,6 +3,13 @@
 {% block title %} Interface - {{interface["GENERAL.DEVICE"]}} {% endblock %}
 
 {% block content %}
+<p class="submenu">
+    {% if interface["GENERAL.TYPE"] == "wifi" %}
+    <a href="{{ url_for('interface_list', interface_id=interface['GENERAL.DEVICE'] )}}">
+        [SCAN]
+    </a>
+    {% endif %}
+</p>
 <table id="table" class="table table-striped">
     <thead>
       <tr>

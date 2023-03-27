@@ -1,5 +1,5 @@
 import subprocess
-from typing import List, Type, TypedDict
+from typing import List, Type, Optional
 from dataclasses import dataclass
 
 nmcli_cmd: bytes = b"/usr/bin/nmcli"
@@ -20,6 +20,19 @@ class Device:
     type: str
     state: str
     connection: str
+
+@dataclass
+class Network:
+    in_use: str
+    bssid: str
+    ssid: str
+    mode: str
+    chan: str
+    rate: str
+    signal: str
+    bars: str
+    security: str
+
 
 
 def _nmcli(args: List[bytes]) -> str:
@@ -97,3 +110,19 @@ def get_device_info(device: str) -> dict[str, str]:
     output = _nmcli([b"device", b"show", device.encode("utf-8")])
     d = parse_dict(output, ":")
     return d
+
+
+def scan_networks(device_name: Optional[str] = None) -> List[Network]:
+    args = [b"device", b"wifi", b"list"]
+    if device_name:
+        args.append(b"ifname")
+        args.append(device_name.encode("utf-8"))
+    output = _nmcli(args)
+    table = parse_table(output)
+
+    # Putting back first empty column when applicable
+    for line in table:
+        if line[0] != "*":
+            line.insert(0, "")
+    return table_into_class(table[1:], Network)
+

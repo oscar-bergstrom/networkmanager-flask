@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} Available networks - {{ interface }} {% endblock %}
+
+{% block content %}
+<table id="table" class="table table-striped">
+    <thead>
+        <tr>
+            <th>SSID</th>
+            <th>Rate</th>
+            <th>Signal</th>
+            <th>Bars</th>
+            <th>Security</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for network in networks %}
+        <tr>
+            <td>{{ network.ssid }}</td>
+            <td>{{ network.rate }}</td>
+            <td>{{ network.signal }}</td>
+            <td>{{ network.bars }}</td>
+            <td>{{ network.security }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
