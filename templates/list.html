@@ -6,6 +6,7 @@
 <table id="table" class="table table-striped">
     <thead>
         <tr>
+            <th></th>
             <th>SSID</th>
             <th>Rate</th>
             <th>Signal</th>
@@ -16,6 +17,11 @@
     <tbody>
         {% for network in networks %}
         <tr>
+            <td>
+                <a href="{{ url_for('add_wifi_connection', interface=interface, ssid=network.ssid )}}">
+                    [CONNECT]
+                </a>
+            </td>
             <td>{{ network.ssid }}</td>
             <td>{{ network.rate }}</td>
             <td>{{ network.signal }}</td>
