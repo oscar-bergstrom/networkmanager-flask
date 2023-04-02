@@ -27,6 +27,16 @@ def connection(con):
     return render_template("connection.html", connection=info)
 
 
+@app.route("/connections/<con>/delete")
+def delete_connection(con):
+    try:
+        nmcli.delete_connection(con)
+    except IOError:
+        pass
+
+    return redirect(url_for("connections"))
+
+
 @app.route("/interfaces")
 def interfaces():
     return render_template("interfaces.html", interfaces=nmcli.get_devices())

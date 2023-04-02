@@ -138,7 +138,11 @@ def add_wifi(ssid: str, psk: str, device: Optional[str] = None) -> None:
         args.append(b"ifname")
         args.append(device.encode("utf-8"))
 
-    output = _nmcli(args)
+    _nmcli(args)
+
+
+def delete_connection(connection: str):
+    _nmcli([b"con", b"delete", b"id", connection.encode("utf-8")])
 
 
 
