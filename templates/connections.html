@@ -3,6 +3,12 @@
 {% block title %} Connections {% endblock %}
 
 {% block content %}
+<p class="submenu">
+    <a href="{{ url_for('add_wifi_connection') }}">
+        [ADD]
+    </a>
+</p>
+
 <table id="table" class="table table-striped">
     <thead>
       <tr>
