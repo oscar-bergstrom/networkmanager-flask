@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %} nmcli error {% endblock %}
+
+{% block content %}
+<p>Command: {{ error.command }}</p>
+<p>Error code: {{ error.errcode }}</p>
+<p>Error message: {{ error.message }}</p>
+
+{% endblock %}

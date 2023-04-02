@@ -1,10 +1,22 @@
 from flask import Flask, redirect, render_template, request, url_for
 from markupsafe import escape
 from datetime import datetime
+from werkzeug.exceptions import InternalServerError
 
 import nmcli
 
 app = Flask(__name__)
+
+
+@app.errorhandler(InternalServerError)
+def handle_500(e):
+    err = getattr(e, "original_exception", "Unknown error")
+    return render_template("500.html", error=err)
+
+
+@app.errorhandler(nmcli.CommandException)
+def handle_nmcli(e):
+    return render_template("nmcli_error.html", error=e)
 
 
 @app.route("/")
@@ -20,20 +32,13 @@ def connections():
 
 @app.route("/connections/<con>")
 def connection(con):
-    try:
-        info = nmcli.get_connection_info(con)
-    except OSError as e:
-        info = {"ERROR": e.__str__()}
+    info = nmcli.get_connection_info(con)
     return render_template("connection.html", connection=info)
 
 
 @app.route("/connections/<con>/delete")
 def delete_connection(con):
-    try:
-        nmcli.delete_connection(con)
-    except IOError:
-        pass
-
+    nmcli.delete_connection(con)
     return redirect(url_for("connections"))
 
 
@@ -44,10 +49,7 @@ def interfaces():
 
 @app.route("/interfaces/<interface_id>")
 def interface(interface_id):
-    try:
-        info = nmcli.get_device_info(interface_id)
-    except OSError as e:
-        info = {"ERROR": e.__str__()}
+    info = nmcli.get_device_info(interface_id)
     return render_template("interface.html", interface=info)
 
 
@@ -60,7 +62,6 @@ def interface_list(interface_id):
 @app.route("/connections/add", methods=["GET", "POST"])
 def add_wifi_connection():
     if request.method == "POST":
-
         ssid = request.form.get("ssid")
         psk = request.form.get("psk")
         device = request.form.get("interface")
@@ -68,11 +69,9 @@ def add_wifi_connection():
             device = None
 
         if ssid and psk:
-            try:
-                nmcli.add_wifi(ssid, psk, device=device)
-                return redirect(url_for("connection", con=ssid))
-            except Exception as e:
-                return e.__str__()
+            nmcli.add_wifi(ssid, psk, device=device)
+            return redirect(url_for("connection", con=ssid))
+
 
     # Handling
     devices = nmcli.get_devices()

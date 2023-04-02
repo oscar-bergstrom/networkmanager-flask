@@ -34,6 +34,13 @@ class Network:
     security: str
 
 
+class CommandException(Exception):
+    def __init__(self, command: List[bytes], errcode: int, message: str):
+        super().__init__(message)
+        self.command = command
+        self.errcode = errcode
+        self.message = message
+
 
 def _nmcli(args: List[bytes]) -> str:
     command = [nmcli_cmd, b"-c", b"no"]
@@ -44,9 +51,7 @@ def _nmcli(args: List[bytes]) -> str:
     if ret.returncode == 0:
         return ret.stdout.decode("utf-8")
     else:
-        raise IOError("Running {} returned {} -> {}".format(command,
-                                                            ret.returncode,
-                                                            ret.stderr.decode("utf-8")))
+        raise CommandException(command, ret.returncode, ret.stderr.decode("utf-8"))
 
 
 def parse_table(text: str) -> List[List[str]]:
