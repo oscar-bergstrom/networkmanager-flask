@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 from markupsafe import escape
 from datetime import datetime
 
@@ -15,7 +15,6 @@ def index():
 @app.route("/connections")
 def connections():
     con = nmcli.get_connections()
-    print("con:", con)
     return render_template("connections.html", connections=con)
 
 
@@ -48,13 +47,29 @@ def interface_list(interface_id):
     return render_template("list.html", interface=interface_id, networks=networks)
 
 
-@app.route("/connections/add")
+@app.route("/connections/add", methods=["GET", "POST"])
 def add_wifi_connection():
+    if request.method == "POST":
+
+        ssid = request.form.get("ssid")
+        psk = request.form.get("psk")
+        device = request.form.get("interface")
+        if device == "All":
+            device = None
+
+        if ssid and psk:
+            try:
+                nmcli.add_wifi(ssid, psk, device=device)
+                return redirect(url_for("connection", con=ssid))
+            except Exception as e:
+                return e.__str__()
+
+    # Handling
     devices = nmcli.get_devices()
     interfaces_ = [device.device for device in devices if device.type == "wifi"]
 
-    args = request.args
     return render_template("connect.html",
                            interfaces=interfaces_,
-                           ssid=args.get("ssid", ""),
-                           selected_interface=args.get("interface", ""))
+                           ssid=request.args.get("ssid", ""),
+                           selected_interface=request.args.get("interface", ""))
+

@@ -44,7 +44,9 @@ def _nmcli(args: List[bytes]) -> str:
     if ret.returncode == 0:
         return ret.stdout.decode("utf-8")
     else:
-        raise IOError("Running {} returned {}".format(command, ret.returncode))
+        raise IOError("Running {} returned {} -> {}".format(command,
+                                                            ret.returncode,
+                                                            ret.stderr.decode("utf-8")))
 
 
 def parse_table(text: str) -> List[List[str]]:
@@ -125,4 +127,18 @@ def scan_networks(device_name: Optional[str] = None) -> List[Network]:
         if line[0] != "*":
             line.insert(0, "")
     return table_into_class(table[1:], Network)
+
+
+def add_wifi(ssid: str, psk: str, device: Optional[str] = None) -> None:
+    assert ssid
+    assert psk
+
+    args = [b"device", b"wifi", b"connect", ssid.encode("utf-8"), b"password", psk.encode("utf-8")]
+    if device:
+        args.append(b"ifname")
+        args.append(device.encode("utf-8"))
+
+    output = _nmcli(args)
+
+
 
