@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %} Add new network {% endblock %}
+
+{% block content %}
+
+<form action="#" method="post">
+  <p>
+    <label for="interface">Interface:</label>
+    <select name="interface" id="interface">
+      <option>All</option>
+      {% for interface in interfaces %}
+        {% if interface == selected_interface %}
+          <option selected>{{ interface }}</option>
+        {% else %}
+          <option>{{ interface }}</option>
+        {% endif %}
+      {% endfor%}
+    </select>
+  </p>
+
+  <p>
+    <label for="ssid">SSID:</label>
+    <input type="text" id="ssid" name="ssid" value="{{ssid}}">
+  </p>
+
+  <p>
+    <label for="psk">PSK:</label>
+    <input type="text" id="psk" name="psk">
+  </p>
+
+  <p>
+    <input type="submit" value="Connect">
+  </p>
+</form>
+
+{% endblock %}
